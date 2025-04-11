@@ -1,14 +1,15 @@
 import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Function to draw confetti
+# Function to draw confetti inside the Tkinter window
 def draw_confetti():
     # Create a figure and axis
     fig, ax = plt.subplots()
 
     # Set the size of the figure
-    fig.set_size_inches(8, 8)
+    fig.set_size_inches(4, 4)  # Smaller size for embedding
 
     # Generate random positions for confetti
     x = np.random.rand(100)
@@ -26,11 +27,20 @@ def draw_confetti():
     # Remove axes
     ax.set_axis_off()
 
-    # Show the plot
-    plt.show()
+    # Embed the figure in the Tkinter window
+    canvas = FigureCanvasTkAgg(fig, master=root)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.grid(row=2, column=0, columnspan=2, pady=10)
+    canvas.draw()
 
 # Function to show birthday message and confetti
 def show_birthday_message():
+    # Hide the question and buttons
+    question_label.grid_forget()
+    yes_button.grid_forget()
+    no_button.grid_forget()
+
+    # Show the birthday message
     message_label.config(text="¡Feliz cumpleaños!")
     draw_confetti()
 
@@ -43,7 +53,7 @@ def handle_no_button():
 # Function to close the program
 def close_program():
     message_label.config(text="Okay, bye")
-    root.after(1000, root.quit)  # Wait 1 second before closing
+    root.after(1000, root.quit)  # Wait 2 seconds before closing
 
 # Function to reset to the first question
 def reset_question():
@@ -54,6 +64,9 @@ def reset_question():
 # Create the main window
 root = tk.Tk()
 root.title("Felicidades")
+
+# Ensure the program exits completely when the window is closed
+root.protocol("WM_DELETE_WINDOW", root.quit)
 
 # Set the initial size of the window
 window_width = 800
@@ -71,6 +84,7 @@ root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 # Configure the grid layout
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)
+root.rowconfigure(2, weight=1)
 root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=1)
 
